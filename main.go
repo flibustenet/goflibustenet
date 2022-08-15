@@ -9,6 +9,7 @@ import (
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		u := r.URL.Path[1:]
+		fmt.Fprintf(w, "host=%s", r.URL.Host)
 		fmt.Fprintf(w, `<meta name="go-import" content="go.flibuste.net/%s git https://github.com/flibustenet/%s">`, u, u)
 	})
 	fmt.Println("Listen on :" + os.Getenv("PORT"))
