@@ -1,11 +1,7 @@
-# syntax = docker/dockerfile:1-experimental
-FROM amd64/golang as builder
+FROM amd64/golang:1.21 as builder
 WORKDIR /app
-COPY go.* /app/
-RUN go mod download
 COPY . /app
-RUN --mount=type=cache,target=/root/.cache/go-build \
-    go build -o goflibustenet
+RUN CGO_ENABLED=0 go build -o goflibustenet
 
 FROM gcr.io/distroless/static-debian11
 COPY --from=builder /app/goflibustenet /app/goflibustenet
