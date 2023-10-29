@@ -1,18 +1,14 @@
+# syntax = docker/dockerfile:1-experimental
 FROM amd64/golang as builder
 WORKDIR /app
-COPY . /app
+COPY go.mod go.sum /app/
 RUN go mod download
-RUN go build -o goflibustenet
+COPY . /app
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    go build -o goflibustenet
 
-FROM debian:buster-slim
-RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy the binary to the production image from the builder stage.
+FROM gcr.io/distroless/static-debian11
 COPY --from=builder /app/goflibustenet /app/goflibustenet
-#COPY template/ /app/template/
-#COPY static/ /app/static/
 
 # Run the web service on container startup.
 ENV PORT 8080
