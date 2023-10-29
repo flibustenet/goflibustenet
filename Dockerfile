@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1-experimental
 FROM amd64/golang as builder
 WORKDIR /app
-COPY go.mod go.sum /app/
+COPY go.* /app/
 RUN go mod download
 COPY . /app
 RUN --mount=type=cache,target=/root/.cache/go-build \
